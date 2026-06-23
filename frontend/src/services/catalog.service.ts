@@ -4,8 +4,15 @@ import type {
   CatalogProductListResponse,
 } from "@/types/catalog";
 
-// Las llamadas al catálogo van directamente a la API pública — sin auth header
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+// El catálogo se renderiza en Server Components (SSR), por lo que el fetch corre
+// dentro del contenedor del frontend. Ahí "localhost" NO es el backend, por eso
+// se prefiere INTERNAL_API_URL (ej: http://backend:8000 en Docker). En local sin
+// Docker cae a NEXT_PUBLIC_API_URL / localhost. Se normaliza para terminar en /api/v1.
+const SERVER_API_BASE =
+  process.env.INTERNAL_API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:8000";
+const API_URL = `${SERVER_API_BASE.replace(/\/+$/, "")}/api/v1`;
 
 export const catalogService = {
   listProducts: async (params?: {

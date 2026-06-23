@@ -44,3 +44,7 @@ Thumbs.db
 *.xlsx
 *.csv
 exports/
+
+# Imágenes subidas (media local del catálogo)
+backend/media/
+media/

@@ -17,6 +17,21 @@ _SEED_CATEGORIES = [
     {"name": "Bovino",     "slug": "bovino",     "description": "Artículos para ganadería: sogas, bozales, yugos"},
     {"name": "Accesorios", "slug": "accesorios", "description": "Cinturones, billeteras, carteras y marroquinería"},
     {"name": "Herrería",   "slug": "herreria",   "description": "Hebillas, argollas, herramientas y ferretería"},
+    # Categorías del taller (equivalen al seed de la migración 002 — necesarias
+    # cuando la BD se inicializa vía create_all en desarrollo, sin Alembic).
+    {"name": "Cueros y Pieles",        "slug": "cueros-pieles",        "description": "Materias primas: cueros y pieles"},
+    {"name": "Hebillería y Herrajes",  "slug": "hebilleria-herrajes",  "description": "Hebillas, herrajes y metales"},
+    {"name": "Coronas y Adornos",      "slug": "coronas-adornos",      "description": "Adornos y apliques decorativos"},
+    {"name": "Hilos y Telas",          "slug": "hilos-telas",          "description": "Hilos, telas y textiles"},
+    {"name": "Insumos de Taller",      "slug": "insumos-taller",       "description": "Insumos consumibles del taller"},
+    {"name": "Monturas",               "slug": "monturas",             "description": "Productos terminados: monturas"},
+    {"name": "Hakimas y Jaquimas",     "slug": "hakimas-jaquimas",     "description": "Hakimas y jaquimas"},
+    {"name": "Mantas y Sudaderos",     "slug": "mantas-sudaderos",     "description": "Mantas y sudaderos"},
+    {"name": "Riendas y Bridas",       "slug": "riendas-bridas",       "description": "Riendas y bridas"},
+    {"name": "Cinchería",              "slug": "cincheria",            "description": "Cinchas y cinchería"},
+    {"name": "Ganadería",              "slug": "ganaderia",            "description": "Artículos de ganadería"},
+    {"name": "Pet Shop",               "slug": "pet-shop",             "description": "Artículos para mascotas"},
+    {"name": "Herramientas de Taller", "slug": "herramientas-taller",  "description": "Herramientas del taller"},
 ]
 
 

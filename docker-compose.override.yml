@@ -4,3 +4,11 @@ services:
     volumes:
       - ./backend:/app
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    environment:
+      # SSR del catálogo (Server Components) corre dentro del contenedor: debe
+      # llegar al backend por el nombre de servicio, no por localhost.
+      INTERNAL_API_URL: http://backend:8000
+      # Usado por código cliente (navegador) — apunta al backend publicado en el host.
+      NEXT_PUBLIC_API_URL: http://localhost:8000
