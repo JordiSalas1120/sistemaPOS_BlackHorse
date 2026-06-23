@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Talabartería DB",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "talabarteria_db",
+      "Username": "talabarteria",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    }
+  }
+}

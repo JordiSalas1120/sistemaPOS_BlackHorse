@@ -1,0 +1,6 @@
+# Overrides para desarrollo local: hot-reload en backend, build de producción en frontend
+services:
+  backend:
+    volumes:
+      - ./backend:/app
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload

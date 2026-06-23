@@ -1,0 +1,65 @@
+1. Arquitectura del Sistema: "Modular Monolith"Para un entorno local, no necesitamos la complejidad de microservicios, pero sí una separación clara de responsabilidades. Una arquitectura de Monolito Modular permitirá que el backend y el frontend se comuniquen eficientemente mientras mantienes el código organizado.Componentes Clave:Capa de Presentación (Frontend): Encargada de la interfaz de usuario y la experiencia del cliente.Capa de Aplicación (Backend API): Donde reside la lógica de negocio (reglas de ventas, cálculos de precios).Capa de Datos: Persistencia de información.Módulo de Integración: Específicamente para la comunicación con WhatsApp.2. Stack Tecnológico SugeridoPara maximizar el rendimiento y la facilidad de mantenimiento:Frontend: Next.js (React). Es la opción ideal frente a Nest (que es un framework de Node.js para backend). Next.js ofrece un renderizado rapidísimo y, al ser local, puedes usarlo como una PWA (Progressive Web App) para que funcione incluso con intermitencia de red.Backend: FastAPI (Python). Dado que ya manejas Python, FastAPI es significativamente más rápido que Django o Flask. Es moderno, genera documentación automática (Swagger) y maneja procesos asíncronos de forma nativa, lo cual es vital para el CRM y las integraciones.Base de Datos: PostgreSQL. Aunque sea local, PostgreSQL es superior a SQLite para manejar relaciones complejas (como las de un CRM) y tipos de datos JSONB, que te permitirán guardar atributos variables de los productos de cuero (medidas, tipo de animal, herrajes) sin cambiar la estructura de la tabla.3. Lógica de Negocio y Base de DatosEl corazón del sistema es cómo diferenciamos los tipos de venta y el catálogo.El Catálogo DinámicoLos productos de talabartería no siempre son estándar. Necesitas una tabla de Productos y una de Variaciones.Ejemplo: Una montura puede ser "Salto" o "Trabajo", y el precio cambia según el cuero o los detalles para ganadería pesada.Lógica de Ventas (Retail vs. Wholesale)Para manejar esta dualidad, implementaremos un sistema de Listas de Precios:Venta Diaria: Precio de lista estándar.Venta al por Mayor: Un disparador lógico que, al detectar cierta cantidad de unidades o un perfil de cliente "Mayorista" en el CRM, aplique descuentos porcentuales o precios fijos por volumen.Esquema de Datos Esencial (Tablas):TablaFunciónClientsDatos de contacto, historial de compras y etiquetas para el CRM.ProductsNombre, descripción, categoría (Equino, Bovino, Accesorios).InventoryStock en tiempo real con alertas de nivel bajo.SalesRegistro de transacciones, tipo de pago y referencia al vendedor.Price_RulesLógica para ventas al por mayor (ej: >10 unidades = 15% desc).4. Integración con WhatsApp y CRMPara el CRM, el objetivo es la automatización de la fidelización.WhatsApp Local: Al estar en un entorno local, puedes usar librerías de Python como pywhatkit o, de forma más profesional, configurar un Webhook con la API de WhatsApp Business.Flujo del CRM:Al registrar una venta de un producto para "Ganadería Pesada", el sistema etiqueta al cliente.Cada 3 o 6 meses (tiempo estimado de mantenimiento del cuero), el sistema genera una alerta o envía un mensaje automático de WhatsApp ofreciendo productos de limpieza o revisiones.Promociones: Segmentación por etiquetas (ej: enviar promo de herraduras solo a quienes han comprado artículos de herrería antes).5. Estrategia de ImplementaciónFase 1 (Core): Configurar FastAPI con PostgreSQL y crear el CRUD (Crear, Leer, Actualizar, Borrar) de productos y stock.Fase 2 (Ventas): Desarrollar la lógica de carrito de compras en Next.js que distinga entre cliente final y mayorista.Fase 3 (CRM): Implementar el registro de clientes y la conexión con el motor de mensajería para las promociones.Fase 4 (Local Deployment): Dockerizar la aplicación para que puedas levantarla en cualquier máquina local con un solo comando (docker-compose up).
+1. El Corazón del Sistema: La Arquitectura Hexagonal
+En esta arquitectura, el Dominio es el centro y no conoce nada del mundo exterior (ni de la base de datos, ni de Excel, ni de WhatsApp).
+
+Estructura de Capas
+Dominio (Entidades y Reglas): Aquí definimos qué es un Producto, una Venta y un Cliente. También incluimos la lógica de "Venta al por mayor" (por ejemplo, una función que calcule descuentos basados en volumen).
+
+Aplicación (Casos de Uso): Aquí se orquestan las acciones. Ejemplos: RegistrarVenta, ExportarReporteMensual, EnviarNotificacionWhatsApp. Esta capa usa "Puertos" (interfaces).
+
+Infraestructura (Adaptadores): Aquí es donde ocurre la magia técnica.
+
+Adaptadores de Entrada (Driving): FastAPI (los controladores que reciben peticiones del frontend).
+
+Adaptadores de Salida (Driven): El código que escribe en PostgreSQL, el código que genera el Excel/TXT, y el cliente que conecta con WhatsApp.
+
+2. Auditoría y Exportación (Excel/TXT)
+Para que el sistema sea auditable y permita exportar datos sin romper la lógica, utilizaremos el patrón Port.
+
+Lógica de Exportación
+Definimos un puerto llamado ReportExporterPort. No importa si exportas a Excel, TXT o PDF; el caso de uso solo llama a .export(data).
+
+Excel: Usaremos la librería pandas u openpyxl dentro del adaptador de infraestructura.
+
+TXT: Un adaptador sencillo que formatee los strings para impresión de tickets o registros planos.
+
+Auditoría: Implementaremos un Middleware en FastAPI o un Decorator en los casos de uso que registre cada acción (quién vendió, qué producto, a qué hora) en una tabla de Logs antes de ejecutar la operación.
+
+3. Integraciones (WhatsApp y CRM)
+Al usar Arquitectura Hexagonal, WhatsApp es simplemente otro "Adaptador de Salida". Si el día de mañana decides cambiar WhatsApp por Telegram o una API de correo, solo cambias el adaptador, nunca tocas la lógica de la venta.
+
+CRM Integrado: Los datos de los clientes se consultan mediante un puerto CustomerRepository. Esto permite que el sistema de ventas sepa si un cliente es "Especial" o "Mayorista" de forma instantánea.
+
+4. Estructura de Directorios (Python/FastAPI)
+Para mantener este lineamiento, el proyecto debería verse así:
+
+Plaintext
+src/
+├── domain/                # Reglas puras de talabartería (Precios, Stock)
+│   ├── models/            # Entidad Producto, Cliente, Venta
+│   └── services/          # Lógica de cálculo mayorista
+├── application/           # Casos de uso
+│   ├── ports/             # Interfaces (RepositoryPort, ExporterPort, MessengerPort)
+│   └── use_cases/         # RegistrarVenta.py, ExportarAuditoria.py
+├── infrastructure/        # Implementaciones técnicas
+│   ├── adapters/
+│   │   ├── postgres_repo/ # SQLAlchemy/Tortoise
+│   │   ├── excel_exporter/# Implementación con Pandas
+│   │   └── whatsapp_api/  # Integración externa
+│   └── api/               # FastAPI (Rutas y Controladores)
+└── main.py                # Punto de entrada e inyección de dependencias
+5. Frontend (Next.js) y el Alineamiento Local
+Dado que el sistema es local, el rendimiento es clave. Next.js nos permite una estructura de Módulos Compartidos:
+
+Capas de Servicios: No llamar a la API directamente desde los componentes. Crear una carpeta services/ en el frontend que replique los módulos del backend (inventory.service.ts, crm.service.ts).
+
+Validación: Utilizar Zod o Yup para validar que los datos de los productos de cuero (que pueden tener muchos atributos técnicos) sean correctos antes de enviarlos al backend.
+
+Interfaz de Auditoría: Una vista dedicada donde el administrador pueda filtrar las ventas por fecha y dar clic en un botón de "Generar Reporte Excel" que dispare el caso de uso en el backend.
+
+6. Ventajas de este Enfoque
+Auditoría Total: Al estar centralizada la lógica en Casos de Uso, puedes insertar un "Logger" que capture todo lo que entra y sale.
+
+Facilidad de Testing: Puedes probar la lógica de precios mayoristas sin necesidad de tener una base de datos conectada.
+
+Independencia de Framework: Si Next.js o FastAPI se vuelven obsoletos en 5 años, tu lógica de negocio de talabartería sigue intacta en la carpeta domain.
