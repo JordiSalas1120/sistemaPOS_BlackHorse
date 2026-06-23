@@ -20,6 +20,8 @@ from src.infrastructure.adapters.postgres_repo.price_rule_repository import Pric
 from src.infrastructure.adapters.postgres_repo.bom_repository import BOMRepository
 from src.infrastructure.adapters.postgres_repo.workshop_product_repository import WorkshopProductRepository
 from src.infrastructure.adapters.postgres_repo.production_order_repository import ProductionOrderRepository
+from src.infrastructure.adapters.postgres_repo.catalog_repository import CatalogRepository
+from src.infrastructure.adapters.postgres_repo.product_image_repository import ProductImageRepository
 from src.application.ports.repositories.product_repository_port import ProductRepositoryPort
 from src.application.ports.repositories.inventory_repository_port import InventoryRepositoryPort
 from src.application.ports.repositories.category_repository_port import CategoryRepositoryPort
@@ -33,6 +35,10 @@ from src.application.ports.repositories.workshop_product_repository_port import 
 )
 from src.application.ports.repositories.production_order_repository_port import (
     ProductionOrderRepositoryPort,
+)
+from src.application.ports.repositories.catalog_repository_port import CatalogRepositoryPort
+from src.application.ports.repositories.product_image_repository_port import (
+    ProductImageRepositoryPort,
 )
 
 # ── Servicios de dominio ──────────────────────────────────────────────────────
@@ -92,6 +98,16 @@ def get_production_order_repo(
     session: AsyncSession = Depends(get_db_session),
 ) -> ProductionOrderRepositoryPort:
     return ProductionOrderRepository(session)
+
+
+def get_catalog_repo(session: AsyncSession = Depends(get_db_session)) -> CatalogRepositoryPort:
+    return CatalogRepository(session)
+
+
+def get_product_image_repo(
+    session: AsyncSession = Depends(get_db_session),
+) -> ProductImageRepositoryPort:
+    return ProductImageRepository(session)
 
 
 def get_inventory_service() -> InventoryService:

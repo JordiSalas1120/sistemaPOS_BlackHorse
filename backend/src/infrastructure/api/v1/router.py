@@ -8,6 +8,7 @@ from src.infrastructure.api.v1.endpoints.price_rules import router as price_rule
 from src.infrastructure.api.v1.endpoints.exports import router as exports_router
 from src.infrastructure.api.v1.endpoints.workshop import router as workshop_router
 from src.infrastructure.api.v1.endpoints.production_orders import router as production_router
+from src.infrastructure.api.v1.endpoints.product_images import router as product_images_router
 
 api_router = APIRouter()
 
@@ -20,3 +21,4 @@ api_router.include_router(price_rules_router)
 api_router.include_router(exports_router)
 api_router.include_router(workshop_router)
 api_router.include_router(production_router)
+api_router.include_router(product_images_router)

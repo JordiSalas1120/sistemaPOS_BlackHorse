@@ -11,3 +11,4 @@ from src.infrastructure.database.orm_models.production_order_orm import (  # noq
     ProductionOrderItemORM,
     ProductionOrderORM,
 )
+from src.infrastructure.database.orm_models.product_image_orm import ProductImageORM  # noqa: F401

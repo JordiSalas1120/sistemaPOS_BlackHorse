@@ -1,7 +1,9 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import func, select
 
 from src.config import settings
@@ -67,6 +69,15 @@ _TAGS_METADATA = [
         "description": "Descargas en formato Excel (pandas/openpyxl) para productos, inventario y ventas. Ticket de venta en formato TXT de 40 caracteres compatible con impresoras POS.",
     },
     {
+        "name": "Catálogo Público",
+        "description": "Endpoints públicos de la vitrina. Sin autenticación. Solo lectura. "
+                       "Expone únicamente productos con `show_in_catalog=True` e `is_active=True`.",
+    },
+    {
+        "name": "Imágenes de Producto",
+        "description": "Gestión admin de imágenes de producto (subida, orden, principal, borrado).",
+    },
+    {
         "name": "Health",
         "description": "Endpoints de diagnóstico para monitoreo del servicio.",
     },
@@ -124,10 +135,20 @@ app.add_middleware(
 )
 app.add_middleware(AuditMiddleware)
 
+# ── Archivos estáticos: imágenes subidas ───────────────────────────────────────
+# En producción nginx sirve /media/ directamente; en desarrollo lo sirve FastAPI.
+os.makedirs(settings.media_local_path, exist_ok=True)
+app.mount("/media", StaticFiles(directory=settings.media_local_path), name="media")
+
 # ── Routers ───────────────────────────────────────────────────────────────────
 from src.infrastructure.api.v1.router import api_router
+from src.infrastructure.api.v1.endpoints.catalog import router as catalog_router
 
 app.include_router(api_router, prefix="/api/v1")
+
+# El router de catálogo es público (solo-lectura GET): se registra aparte para
+# no pasar por AuditMiddleware ni la futura autenticación del dashboard.
+app.include_router(catalog_router, prefix="/api/v1/catalog")
 
 
 @app.get("/", tags=["Health"], summary="Health check")

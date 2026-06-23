@@ -51,3 +51,10 @@ class ProductORM(Base):
         foreign_keys="BomORM.finished_product_id",
         uselist=False,
     )
+    images: Mapped[list["ProductImageORM"]] = relationship(  # noqa: F821
+        "ProductImageORM",
+        back_populates="product",
+        cascade="all, delete-orphan",
+        order_by="ProductImageORM.sort_order",
+        lazy="select",
+    )

@@ -15,6 +15,7 @@ import type { CreateProductValues, UpdateProductValues } from "@/schemas/product
 import type { Category, Product } from "@/types";
 import { FormField, SelectField, TextAreaField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
+import { ImageGalleryAdmin } from "@/components/products/ImageGalleryAdmin";
 
 interface ProductFormProps {
   product?: Product;          // si existe → modo edición
@@ -188,6 +189,13 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
           <input type="checkbox" {...register("is_active")} className="rounded border-gray-300" />
           Producto activo
         </label>
+      )}
+
+      {/* Galería de imágenes — solo en edición (requiere product.id existente) */}
+      {isEdit && product && (
+        <div className="border-t border-gray-100 pt-4">
+          <ImageGalleryAdmin productId={product.id} />
+        </div>
       )}
 
       {serverError && (
