@@ -1,0 +1,327 @@
+/* ── Catálogo Revista — diseño editorial premium ──────────────────────────── */
+/* Paleta (familia cuero, derivada de brand-*):
+   espresso #241208 · crema #fdf8f0 · texto #2c1810 · cuero #d97f22 · latón #9a6b2f */
+
+.viewport {
+  --espresso: #1a0f08;
+  --espresso-2: #241208;
+  --cream: #fdf8f0;
+  --ink: #2c1810;
+  --leather: #d97f22;
+  --brass: #9a6b2f;
+  --muted: #7a6a5a;
+  background: var(--espresso);
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
+
+.serif {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+}
+
+/* ── Barra de herramientas (solo pantalla) ────────────────────────────────── */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(26, 15, 8, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(154, 107, 47, 0.35);
+}
+.toolbarBrand {
+  color: var(--cream);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+.toolbarLink {
+  color: #e0b878;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.toolbarLink:hover {
+  color: #f4d5a8;
+}
+
+/* ── Pila de páginas ───────────────────────────────────────────────────────── */
+.magazine {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 2rem 1rem 0;
+}
+
+.page {
+  position: relative;
+  background: var(--cream);
+  color: var(--ink);
+  overflow: hidden;
+  /* Proporción ~A4 en pantalla */
+  aspect-ratio: 1 / 1.414;
+  margin: 0 auto 2.25rem;
+  box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Portada ───────────────────────────────────────────────────────────────── */
+.cover {
+  background:
+    radial-gradient(120% 80% at 70% 10%, rgba(217, 127, 34, 0.22), transparent 55%),
+    radial-gradient(90% 60% at 20% 95%, rgba(154, 107, 47, 0.18), transparent 60%),
+    var(--espresso-2);
+  color: var(--cream);
+  justify-content: space-between;
+  padding: clamp(1.75rem, 5vw, 3.5rem);
+}
+.coverGrain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.8) 0.5px, transparent 0.6px);
+  background-size: 4px 4px;
+}
+.coverEyebrow {
+  position: relative;
+  font-size: clamp(0.6rem, 1.6vw, 0.78rem);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #e0b878;
+}
+.coverTitle {
+  position: relative;
+  font-size: clamp(3rem, 13vw, 6.5rem);
+  line-height: 0.9;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.coverTitle span {
+  display: block;
+  color: var(--leather);
+}
+.coverRule {
+  position: relative;
+  width: 64px;
+  height: 2px;
+  background: var(--brass);
+  margin: 1.25rem 0;
+}
+.coverSubtitle {
+  position: relative;
+  font-size: clamp(1rem, 2.6vw, 1.4rem);
+  color: #f4e4c8;
+  max-width: 28ch;
+}
+.coverFooter {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.coverMeta {
+  font-size: clamp(0.65rem, 1.6vw, 0.8rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a878;
+  line-height: 1.8;
+}
+.coverQr {
+  text-align: center;
+  color: #c9a878;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.coverQr img {
+  display: block;
+  width: 104px;
+  height: 104px;
+  background: #fff;
+  padding: 7px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+/* ── Spread de producto ────────────────────────────────────────────────────── */
+.spread {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  height: 100%;
+}
+.spreadReverse .photoWrap {
+  order: 2;
+}
+.photoWrap {
+  position: relative;
+  background: #efe3d2;
+}
+.photoWrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photoEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--brass);
+  font-size: 3rem;
+}
+.column {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.folio {
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  line-height: 1;
+  color: rgba(44, 24, 16, 0.16);
+  font-weight: 800;
+}
+.eyebrow {
+  font-size: 0.66rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--leather);
+}
+.name {
+  font-size: clamp(1.6rem, 4.4vw, 2.6rem);
+  line-height: 1.04;
+  font-weight: 700;
+  margin: 0;
+}
+.modelo {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+.rule {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, var(--brass), transparent);
+  margin: 0.4rem 0;
+}
+.compTitle {
+  font-size: 0.66rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.compList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.compItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+.compItem::before {
+  content: "";
+  flex: 0 0 7px;
+  height: 7px;
+  border: 1.5px solid var(--leather);
+  border-radius: 50%;
+  transform: translateY(-1px);
+}
+.desc {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #4a3528;
+}
+.priceRow {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.price {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--espresso-2);
+}
+.sku {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+/* ── Contraportada ─────────────────────────────────────────────────────────── */
+.back {
+  background: var(--espresso-2);
+  color: var(--cream);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 3rem;
+}
+
+/* ── Impresión: una página A4 por hoja ─────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  .viewport {
+    background: #fff;
+    padding: 0;
+  }
+  .toolbar {
+    display: none;
+  }
+  .magazine {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .page {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    aspect-ratio: auto;
+    width: 100%;
+    height: 100vh;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-child {
+    page-break-after: auto;
+  }
+}
+
+/* ── Responsive: en móvil los spreads se apilan ────────────────────────────── */
+@media screen and (max-width: 640px) {
+  .page {
+    aspect-ratio: auto;
+    min-height: 80vh;
+  }
+  .spread {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  .spreadReverse .photoWrap {
+    order: 0;
+  }
+  .photoWrap {
+    min-height: 240px;
+  }
+}

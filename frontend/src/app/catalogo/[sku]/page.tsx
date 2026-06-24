@@ -4,7 +4,9 @@ import { catalogService } from "@/services/catalog.service";
 import { WhatsAppButton } from "@/components/catalog/WhatsAppButton";
 import { ImageGallery } from "@/components/catalog/ImageGallery";
 import { ProductCard } from "@/components/catalog/ProductCard";
+import { SharePanel } from "@/components/catalog/SharePanel";
 import { formatCurrency } from "@/lib/formatters";
+import { getModelo, getComponentes, getExtraAttributes } from "@/lib/catalog-attributes";
 import type { CatalogProduct } from "@/types/catalog";
 
 const SHOW_PRICE = process.env.CATALOG_SHOW_PRICES !== "false";
@@ -63,9 +65,9 @@ export default async function ProductoDetallePage({ params }: PageProps) {
     origin: "Origen",
   };
 
-  const attributeEntries = Object.entries(product.attributes).filter(
-    ([, v]) => v !== null && v !== undefined && v !== "",
-  );
+  const modelo = getModelo(product);
+  const componentes = getComponentes(product);
+  const attributeEntries = getExtraAttributes(product);
 
   return (
     <>
@@ -103,8 +105,26 @@ export default async function ProductoDetallePage({ params }: PageProps) {
             <h1 className="text-3xl font-bold text-brand-900 mt-3 leading-tight">
               {product.name}
             </h1>
+            {modelo && <p className="text-brand-600 italic mt-1">{modelo}</p>}
             <p className="text-brand-400 text-sm mt-1">SKU: {product.sku}</p>
           </div>
+
+          {componentes.length > 0 && (
+            <div>
+              <h2 className="font-semibold text-brand-800 mb-2">Características y componentes</h2>
+              <div className="flex flex-wrap gap-2">
+                {componentes.map((c) => (
+                  <span
+                    key={c}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 border border-brand-200 px-3 py-1 text-sm text-brand-800"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {SHOW_PRICE && product.base_price != null && (
             <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
@@ -143,13 +163,17 @@ export default async function ProductoDetallePage({ params }: PageProps) {
             </div>
           )}
 
-          <div className="hidden sm:block">
+          <div className="hidden sm:flex items-center gap-3 flex-wrap">
             <WhatsAppButton
               productName={product.name}
               sku={product.sku}
               phoneNumber={WA_PHONE}
               messageTemplate={WA_TEMPLATE}
               variant="inline"
+            />
+            <SharePanel
+              path={`/catalogo/${product.sku}`}
+              message={`Mirá esta pieza de Black Horse: ${product.name}`}
             />
           </div>
 

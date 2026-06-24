@@ -43,6 +43,12 @@ class Settings(BaseSettings):
     # Path local donde el backend guarda las imágenes subidas.
     media_local_path: str = "./media"
 
+    # ── Catálogo revista (Sprint 4) ──────────────────────────────────────────
+    # Texto de la marca de agua que se "quema" en las imágenes subidas (anti-plagio).
+    watermark_text: str = "BLACK HORSE"
+    # URL pública del sitio (frontend) que codifica el QR para compartir.
+    catalog_public_base_url: str = "http://localhost:3000"
+
     @property
     def is_development(self) -> bool:
         return self.environment == "development"

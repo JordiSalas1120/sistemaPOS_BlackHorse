@@ -32,6 +32,9 @@ export const createProductSchema = z.object({
   product_type: z.enum(productTypeValues).default("resale"),
   show_in_catalog: z.boolean().default(false),
   cost_price: z.coerce.number().positive().optional(),
+  // Campos editoriales del catálogo (se guardan dentro de attributes)
+  modelo: z.string().max(120).optional(),
+  componentes: z.string().max(2000).optional(),
 });
 
 export const updateProductSchema = z.object({
@@ -46,6 +49,8 @@ export const updateProductSchema = z.object({
   product_type: z.enum(productTypeValues).optional(),
   show_in_catalog: z.boolean().optional(),
   cost_price: z.coerce.number().positive().optional(),
+  modelo: z.string().max(120).optional(),
+  componentes: z.string().max(2000).optional(),
 });
 
 export type CreateProductValues = z.infer<typeof createProductSchema>;

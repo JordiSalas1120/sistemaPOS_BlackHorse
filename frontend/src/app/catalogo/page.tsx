@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { catalogService } from "@/services/catalog.service";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { CategoryFilter } from "@/components/catalog/CategoryFilter";
 import { CatalogSearch } from "@/components/catalog/CatalogSearch";
+import { SharePanel } from "@/components/catalog/SharePanel";
 
 export const metadata: Metadata = {
   title: "Catálogo de Productos",
@@ -45,7 +47,35 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
+    <>
+      {/* Banda editorial: acceso a la revista + compartir */}
+      <div className="mb-8 rounded-2xl bg-gradient-to-r from-brand-800 to-brand-900 text-white p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 overflow-hidden">
+        <div>
+          <p className="text-brand-300 text-[0.7rem] uppercase tracking-[0.3em] mb-1">
+            Black Horse · Talabartería
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
+            Catálogo de monturas &amp; cuero
+          </h1>
+          <p className="text-brand-200 text-sm mt-1">
+            Piezas artesanales hechas a mano. Mirá la versión revista o descargala en PDF.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/revista"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-500 hover:bg-brand-400 text-white px-5 py-2.5 text-sm font-semibold transition-colors"
+          >
+            Ver catálogo revista
+          </Link>
+          <SharePanel
+            path="/catalogo"
+            message="Mirá el catálogo de Black Horse Talabartería:"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
       {/* Sidebar filtros */}
       <aside className="w-full lg:w-64 flex-shrink-0">
         <div className="bg-white rounded-2xl shadow-sm border border-brand-100 p-5 lg:sticky lg:top-4">
@@ -113,6 +143,7 @@ export default async function CatalogoPage({ searchParams }: PageProps) {
           </nav>
         )}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

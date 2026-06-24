@@ -1,4 +1,8 @@
+import io
+
+import qrcode
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import Response
 
 from src.application.ports.repositories.catalog_repository_port import CatalogRepositoryPort
 from src.config import settings
@@ -36,6 +40,27 @@ def _to_product_response(p) -> CatalogProductResponse:
             for img in p.images
         ],
         base_price=p.base_price if settings.catalog_show_prices else None,
+    )
+
+
+@router.get(
+    "/qr",
+    summary="Código QR para compartir el catálogo",
+    description="Genera un PNG con el QR que apunta a la ruta pública indicada del catálogo.",
+)
+async def catalog_qr(
+    path: str = Query("/catalogo", description="Ruta pública a codificar (ej: /catalogo/EQU-00001)"),
+):
+    if not path.startswith("/"):
+        path = "/" + path
+    url = f"{settings.catalog_public_base_url.rstrip('/')}{path}"
+    img = qrcode.make(url)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return Response(
+        content=buf.getvalue(),
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=3600"},
     )
 
 

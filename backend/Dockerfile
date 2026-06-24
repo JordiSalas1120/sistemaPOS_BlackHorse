@@ -2,10 +2,11 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Dependencias del sistema necesarias para asyncpg y pandas
+# Dependencias del sistema: asyncpg/pandas (gcc, libpq) y fuente para la marca de agua
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
+    fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

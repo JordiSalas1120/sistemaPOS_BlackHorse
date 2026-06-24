@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/types/catalog";
 import { formatCurrency } from "@/lib/formatters";
+import { TiltCard } from "@/components/catalog/TiltCard";
 
 interface ProductCardProps {
   product: CatalogProduct;
@@ -19,7 +20,7 @@ export function ProductCard({ product, showPrice, currencySymbol }: ProductCardP
     product.images.find((img) => img.is_primary) ?? product.images[0] ?? null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group border border-brand-100">
+    <TiltCard className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow overflow-hidden group border border-brand-100">
       {/* Imagen */}
       <div className="relative aspect-square overflow-hidden bg-brand-50">
         <Image
@@ -67,6 +68,6 @@ export function ProductCard({ product, showPrice, currencySymbol }: ProductCardP
           Ver detalle
         </Link>
       </div>
-    </div>
+    </TiltCard>
   );
 }

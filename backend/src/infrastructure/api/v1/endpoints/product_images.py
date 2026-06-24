@@ -13,6 +13,7 @@ from src.application.ports.repositories.product_repository_port import ProductRe
 from src.config import settings
 from src.dependencies import get_product_image_repo, get_product_repo
 from src.domain.models.catalog import ProductImage
+from src.infrastructure.media.watermark import apply_watermark
 from src.infrastructure.api.v1.schemas.product_image_schema import (
     ProductImageResponse,
     ReorderImagesRequest,
@@ -96,6 +97,12 @@ async def upload_product_image(
 
     extension = _validate_image(file)
     contents = await _read_and_validate_size(file)
+
+    # Marca de agua anti-plagio "quemada" en el archivo servido.
+    try:
+        contents = apply_watermark(contents, extension, settings.watermark_text)
+    except Exception:
+        pass  # si el procesado falla, se guarda el original sin romper la subida
 
     filename = f"{uuid.uuid4()}{extension}"
     _save_to_disk(product_id, filename, contents)
