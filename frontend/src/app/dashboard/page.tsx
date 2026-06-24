@@ -12,6 +12,7 @@ import { formatCurrency } from "@/lib/formatters";
 import { Modal } from "@/components/ui/Modal";
 import { POSForm } from "@/components/sales/POSForm";
 import { Button } from "@/components/ui/Button";
+import { CatalogShareCard } from "@/components/dashboard/CatalogShareCard";
 import type { Sale } from "@/types";
 
 interface KPIs {
@@ -129,6 +130,11 @@ export default function DashboardPage() {
             </div>
           </div>
         </Link>
+      </div>
+
+      {/* Catálogo público: URL + QR + descarga */}
+      <div className="mb-6">
+        <CatalogShareCard />
       </div>
 
       {/* Accesos directos */}
