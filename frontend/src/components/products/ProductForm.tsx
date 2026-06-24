@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productsService } from "@/services/products.service";
+import { workshopService } from "@/services/workshop.service";
 import {
   createProductSchema,
   updateProductSchema,
@@ -40,6 +41,7 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateProductValues | UpdateProductValues>({
     resolver: zodResolver(schema),
@@ -69,10 +71,37 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
   });
 
   const watchProductType = watch("product_type");
+  const [bomMsg, setBomMsg] = useState<string | null>(null);
+  const [bomLoading, setBomLoading] = useState(false);
 
   useEffect(() => {
     productsService.listCategories().then(setCategories);
   }, []);
+
+  // Precarga los componentes del catálogo desde la receta (BOM) del producto.
+  const suggestFromBOM = async () => {
+    if (!product) return;
+    setBomLoading(true);
+    setBomMsg(null);
+    try {
+      const bom = await workshopService.getBOM(product.id);
+      const names = bom.items
+        .map((it) => bom.material_names?.[it.material_id])
+        .filter((n): n is string => Boolean(n));
+      if (names.length === 0) {
+        setBomMsg("La receta no tiene materiales para sugerir.");
+        return;
+      }
+      setValue("componentes", names.join("\n"), { shouldDirty: true });
+      setBomMsg(`Se cargaron ${names.length} componente(s) desde la receta. Editá lo que quieras.`);
+    } catch {
+      setBomMsg(
+        "Este producto no tiene receta (BOM). Creala en el Taller o cargá los componentes a mano.",
+      );
+    } finally {
+      setBomLoading(false);
+    }
+  };
 
   const onSubmit = async (values: CreateProductValues | UpdateProductValues) => {
     setServerError(null);
@@ -183,13 +212,26 @@ export function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) 
 
           <TextAreaField
             label="Componentes / características (uno por línea)"
-            placeholder={"Estribos\nCaronas\nManta\nColcha"}
+            placeholder={"Montura de madera\nEstribos\nCaronas\nAletas\nColcha"}
             error={(errors as { componentes?: { message?: string } }).componentes?.message}
             {...register("componentes")}
           />
-          <p className="text-xs text-brand-400 -mt-2">
-            Se muestran como características en el catálogo y la revista.
-          </p>
+          <div className="flex items-center justify-between gap-3 -mt-2">
+            <p className="text-xs text-brand-400">
+              Se muestran como características en el catálogo y la revista.
+            </p>
+            {isEdit && product && watchProductType === "finished_product" && (
+              <button
+                type="button"
+                onClick={suggestFromBOM}
+                disabled={bomLoading}
+                className="shrink-0 text-xs font-medium text-brand-700 hover:text-brand-900 underline decoration-dotted disabled:opacity-60"
+              >
+                {bomLoading ? "Cargando receta…" : "Sugerir desde la receta"}
+              </button>
+            )}
+          </div>
+          {bomMsg && <p className="text-xs text-brand-500">{bomMsg}</p>}
         </div>
       )}
 
