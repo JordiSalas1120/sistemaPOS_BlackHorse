@@ -6,7 +6,7 @@ import { ImageGallery } from "@/components/catalog/ImageGallery";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { SharePanel } from "@/components/catalog/SharePanel";
 import { formatCurrency } from "@/lib/formatters";
-import { getModelo, getComponentes, getExtraAttributes } from "@/lib/catalog-attributes";
+import { getModelo, getComponentes, getExtraAttributes, labelFor } from "@/lib/catalog-attributes";
 import type { CatalogProduct } from "@/types/catalog";
 
 const SHOW_PRICE = process.env.CATALOG_SHOW_PRICES !== "false";
@@ -54,16 +54,6 @@ export default async function ProductoDetallePage({ params }: PageProps) {
   }
 
   const relatedProducts = await catalogService.getRelatedProducts(product.sku);
-
-  const attributeLabels: Record<string, string> = {
-    leather_type: "Tipo de cuero",
-    color: "Color",
-    size: "Talla / Medida",
-    weight_kg: "Peso (kg)",
-    talla: "Talla",
-    acabado: "Acabado",
-    origin: "Origen",
-  };
 
   const modelo = getModelo(product);
   const componentes = getComponentes(product);
@@ -153,7 +143,7 @@ export default async function ProductoDetallePage({ params }: PageProps) {
                   {attributeEntries.map(([key, value]) => (
                     <tr key={key} className="border-b border-brand-100">
                       <td className="py-2 pr-4 text-brand-500 font-medium w-40">
-                        {attributeLabels[key] ?? key}
+                        {labelFor(key)}
                       </td>
                       <td className="py-2 text-brand-800">{String(value)}</td>
                     </tr>

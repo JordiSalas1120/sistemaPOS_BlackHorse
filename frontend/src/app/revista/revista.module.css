@@ -219,6 +219,41 @@
   text-transform: uppercase;
   color: var(--muted);
 }
+/* ── Ficha técnica (specs tipo celular/computadora) ───────────────────────── */
+.specs {
+  margin: 0 0 0.4rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.specRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.32rem 0;
+  border-bottom: 1px solid rgba(154, 107, 47, 0.22);
+}
+.specRow:last-child {
+  border-bottom: none;
+}
+.specKey {
+  margin: 0;
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.specVal {
+  margin: 0;
+  flex: 1 1 auto;
+  text-align: right;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .compList {
   list-style: none;
   margin: 0;

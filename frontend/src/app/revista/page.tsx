@@ -1,6 +1,6 @@
 import { catalogService } from "@/services/catalog.service";
 import { formatCurrency } from "@/lib/formatters";
-import { getModelo, getComponentes } from "@/lib/catalog-attributes";
+import { getModelo, getComponentes, getSpecs } from "@/lib/catalog-attributes";
 import { PrintButton } from "@/components/catalog/PrintButton";
 import styles from "./revista.module.css";
 
@@ -69,6 +69,7 @@ export default async function RevistaPage() {
           const img = p.images.find((x) => x.is_primary) ?? p.images[0] ?? null;
           const modelo = getModelo(p);
           const componentes = getComponentes(p);
+          const specs = getSpecs(p);
           const reverse = i % 2 === 1;
           return (
             <section
@@ -92,9 +93,23 @@ export default async function RevistaPage() {
                 {modelo && <div className={`${styles.modelo} ${styles.serif}`}>{modelo}</div>}
                 <div className={styles.rule} />
 
+                {specs.length > 0 && (
+                  <>
+                    <div className={styles.compTitle}>Ficha técnica</div>
+                    <dl className={styles.specs}>
+                      {specs.map(([label, value]) => (
+                        <div key={label} className={styles.specRow}>
+                          <dt className={styles.specKey}>{label}</dt>
+                          <dd className={styles.specVal}>{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </>
+                )}
+
                 {componentes.length > 0 && (
                   <>
-                    <div className={styles.compTitle}>Características y componentes</div>
+                    <div className={styles.compTitle}>Componentes</div>
                     <ul className={styles.compList}>
                       {componentes.map((c) => (
                         <li key={c} className={styles.compItem}>
