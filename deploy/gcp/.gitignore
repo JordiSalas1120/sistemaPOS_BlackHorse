@@ -1,0 +1,3 @@
+# Variables con secretos (password de BD, etc.). NUNCA commitear.
+gcp.env
+*.secret

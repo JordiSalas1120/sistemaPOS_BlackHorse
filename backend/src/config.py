@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     # Seguridad
     secret_key: str = "changeme"
 
+    # Orígenes permitidos para CORS (separados por coma).
+    # En local: el frontend en localhost:3000. En la nube: la URL pública del frontend.
+    cors_origins: str = "http://localhost:3000"
+
     # WhatsApp Business API
     whatsapp_api_token: str = ""
     whatsapp_phone_number_id: str = ""
@@ -52,6 +56,11 @@ class Settings(BaseSettings):
     @property
     def is_development(self) -> bool:
         return self.environment == "development"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """Lista de orígenes permitidos para CORS, parseada de cors_origins."""
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 settings = Settings()
